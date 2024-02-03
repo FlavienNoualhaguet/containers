@@ -1,0 +1,39 @@
+# Utilisez une image de base avec une distribution Linux appropriée
+FROM ubuntu:22.04
+
+# Mettez à jour les dépôts et installez les dépendances nécessaires
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    unzip \
+    curl \
+    git \
+    openjdk-11-jdk \
+    libxext-dev \
+    libxrender-dev \
+    libxtst-dev \
+    libxi6 \
+    libglib2.0-0 \
+    libfontconfig1 \
+    libgtk2.0-0 \
+    && rm -rf /var/lib/apt/lists/* \
+    && echo "alias ll='ls -lart'" >> /etc/bash.bashrc
+
+# Téléchargez et décompressez NetBeans à partir de l'URL directe
+WORKDIR /projet
+RUN curl -O https://downloads.apache.org/netbeans/netbeans/20/netbeans-20-bin.zip \
+    && unzip netbeans-20-bin.zip \
+    && rm netbeans-20-bin.zip
+
+# Ajoutez le répertoire NetBeans au PATH
+ENV PATH="/projet/netbeans/bin:${PATH}"
+
+# Configurez le dossier pour les données de l'utilisateur
+ENV HOME="/projet"
+
+# Exposez le port X11 pour les applications graphiques
+ENV DISPLAY=:0
+
+
+# Commande par défaut pour démarrer NetBeans
+CMD ["/bin/bash"]
+# On local machine : after building and before running the container
+#  xhost +local:
