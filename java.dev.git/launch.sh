@@ -24,6 +24,10 @@ if [[ ! -z "$CONTAINER_NAME" ]]; then
 else
     # Le conteneur n'existe pas
     echo "Le conteneur n'existe pas. Création et démarrage..."
-    docker run -it --name "java.dev.git:V1.0" -e DISPLAY=$DISPLAY -e WAYLAND_DISPLAY=$WAYLAND_DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --entrypoint /bin/bash $IMAGE_NAME
+    docker run -it --name "${USER}.java.dev.git.V1.0" -e DISPLAY=$DISPLAY -e WAYLAND_DISPLAY=$WAYLAND_DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --entrypoint /bin/bash $IMAGE_NAME
+    if [[ $$ -ne 0 ]]; then
+        echo "Si il y a un probleme de display: xhost +"
+        echo "relancer $(basename $0)"
+    fi
 fi
 
