@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Nom de l'image et du conteneur
-IMAGE_NAME="tracks31/java.dev.git:V1.0"
+IMAGE_NAME="tracks31/java.envdev.git"
 CONTAINER_NAME=$(docker ps -a --filter "ancestor=$IMAGE_NAME:V1.0" --format '{{.Names}}')
 
 # Vérifier si le conteneur existe

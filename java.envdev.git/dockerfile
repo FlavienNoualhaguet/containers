@@ -1,0 +1,53 @@
+# Utilisez une image de base avec une distribution Linux appropriée
+FROM ubuntu:22.04
+
+# Mettez à jour les dépôts et installez les dépendances nécessaires
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    unzip \
+    curl \
+    git \
+    openjdk-11-jdk \
+    libxext-dev \
+    libxrender-dev \
+    libxtst-dev \
+    libxi6 \
+    libglib2.0-0 \
+    libfontconfig1 \
+    libgtk2.0-0 \
+    vim \
+    gedit \
+    && echo "alias ll='ls -lart'" >> /etc/bash.bashrc && \
+       echo "export PS1=\"\\\[\033[01;32m\\\]\\u@\\h\\\[\033[00m\\\]:\\\[\033[01;34m\\\]\\w\\\[\033[00m\\\]\\\$ \"" >> /etc/bash.bashrc && \
+       echo "source /etc/bash_completion" >> /etc/bash.bashrc && \
+       rm -rf /var/lib/apt/lists/*
+
+
+# Téléchargez et décompressez NetBeans à partir de l'URL directe
+WORKDIR /projet
+RUN curl -O https://downloads.apache.org/netbeans/netbeans/20/netbeans-20-bin.zip \
+    && unzip netbeans-20-bin.zip \
+    && rm netbeans-20-bin.zip
+    
+# Configurer vi
+RUN echo "set nocompatible" >> /root/.vimrc \
+    && echo "set tabstop=4" >> /root/.vimrc \
+    && echo "set shiftwidth=4" >> /root/.vimrc \
+    && echo "set expandtab" >> /root/.vimrc \
+    && echo "set syntax=on" >> /root/.vimrc \
+    && echo "set nu" >> /root/.vimrc \
+    && echo "set backspace=indent,eol,start" >> /root/.vimrc
+
+# Ajoutez le répertoire NetBeans au PATH
+ENV PATH="/projet/netbeans/bin:${PATH}"
+
+# Configurez le dossier pour les données de l'utilisateur
+ENV HOME="/projet"
+
+# Exposez le port X11 pour les applications graphiques
+ENV DISPLAY=:0
+
+
+# Commande par défaut pour démarrer NetBeans
+CMD ["/bin/bash"]
+# On local machine : after building and before running the container
+#  xhost +local:
